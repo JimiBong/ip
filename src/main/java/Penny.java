@@ -12,12 +12,8 @@ public class Penny {
             String input = scanner.nextLine();
             String[] parts = input.split("\\s+", 2); // Split by one or more spaces
             String command = parts[0];
-            String value = "";
-
-            if (parts.length == 2) {
-                value = parts[1];
-            }
-
+            String arguments = parts.length > 1 ? parts[1] : "";
+            
             if (command.isBlank()) {
                 continue;
             }
@@ -39,12 +35,12 @@ public class Penny {
             }
 
             else if (command.equalsIgnoreCase("mark")) {
-                if (!isInteger(value)) {
+                if (!isInteger(arguments)) {
                     System.out.println("mark expects a number");
                     continue;
                 }
 
-                int index = Integer.parseInt(value) - 1;
+                int index = Integer.parseInt(arguments) - 1;
                 if (index < 0 || index >= list.size()) {
                     System.out.println("mark out of bounds");
                     continue;
@@ -57,12 +53,12 @@ public class Penny {
             }
 
             else if (command.equalsIgnoreCase("unmark")) {
-                if (!isInteger(value)) {
+                if (!isInteger(arguments)) {
                     System.out.println("unmark expects a number");
                     continue;
                 }
 
-                int index = Integer.parseInt(value) - 1;
+                int index = Integer.parseInt(arguments) - 1;
                 if (index < 0 || index >= list.size()) {
                     System.out.println("unmark out of bounds");
                     continue;
@@ -74,10 +70,33 @@ public class Penny {
                 }
             }
 
-            else if (command.equalsIgnoreCase("add")) {
-                Task task = new Task(value);
+            else if (command.equalsIgnoreCase("todo") ||
+                command.equalsIgnoreCase("deadline") ||
+                command.equalsIgnoreCase("event")) {
+
+                if (arguments.isBlank()) {
+                    System.out.println("Task description cannot be blank");
+                    continue;
+                }
+
+                Task task = null;
+
+                if (command.equalsIgnoreCase("todo")) {
+                    task = ToDoTask.create(arguments);
+                }
+                else if (command.equalsIgnoreCase("deadline")) {
+                    task = DeadlineTask.create(arguments);
+                }
+                else if (command.equalsIgnoreCase("event")) {
+                    task = EventTask.create(arguments);
+                }
+
+                if (task == null) {
+                    continue;
+                }
                 list.add(task);
                 System.out.println("added: " + task);
+
             }
 
             else {

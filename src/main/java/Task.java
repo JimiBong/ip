@@ -1,10 +1,12 @@
 public class Task {
     protected String description;
     protected boolean isDone;
+    protected String icon = "";
 
-    public Task(String description) {
-        this.description = description;
+    protected Task(String description) {
+        this.description = description.trim();
         this.isDone = false;
+        this.icon = "";
     }
 
     public boolean markAsDone() {
@@ -32,7 +34,7 @@ public class Task {
 
     @Override
     public String toString() {
-        String icon = isDone ? "X" : " ";
-        return "[" + icon + "] " + description;
+        String doneIcon = isDone ? "X" : " ";
+        return "[" + icon + "][" + doneIcon + "] " + description;
     }
 }
