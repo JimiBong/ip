@@ -9,23 +9,18 @@ public class Task {
         this.icon = "";
     }
 
-    public boolean markAsDone() {
+    public void markAsDone() throws PennyException{
         if (isDone) {
-            System.out.println("task already marked as done");
-            return false;
+            throw new PennyException("Task is already marked as done");
         }
         isDone = true;
-        return true;
     }
 
-    public boolean unmarkAsDone() {
+    public void unmarkAsDone() throws PennyException{
         if (!isDone) {
-            System.out.println("task already unmarked as done");
-            return false;
+            throw new PennyException("Task is already marked as done");
         }
-
         isDone = false;
-        return true;
     }
 
     public boolean isDone() {

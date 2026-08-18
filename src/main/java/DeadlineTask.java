@@ -7,10 +7,9 @@ public class DeadlineTask extends Task{
         this.icon = "D";
     }
 
-    public static DeadlineTask create(String arguments) {
+    public static DeadlineTask create(String arguments) throws PennyException {
         if (!arguments.contains("/by")) {
-            System.out.println("deadline requires '/by'");
-            return null;
+            throw new PennyException("Deadlines need '/by'");
         }
 
         String[] parts = arguments.split("/by", 2);
@@ -18,8 +17,7 @@ public class DeadlineTask extends Task{
         String deadline = parts[1].trim();
 
         if (description.isBlank() || deadline.isBlank()) {
-            System.out.println("description and deadline cannot be empty.");
-            return null;
+            throw new PennyException("Deadline description and /by cannot be empty.");
         }
 
         return new DeadlineTask(description, deadline);

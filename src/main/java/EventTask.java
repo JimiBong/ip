@@ -9,13 +9,12 @@ public class EventTask extends Task{
         this.icon = "E";
     }
 
-    public static EventTask create(String arguments) {
+    public static EventTask create(String arguments) throws PennyException {
         int fromIndex = arguments.indexOf("/from");
         int toIndex = arguments.indexOf("/to");
 
         if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
-            System.out.println("event requires '/from' followed by '/to'");
-            return null;
+            throw new PennyException("Events need '/from' followed by '/to'");
         }
 
         String description = arguments.substring(0, fromIndex).trim();
@@ -27,8 +26,7 @@ public class EventTask extends Task{
         String to = parts[1].trim();
 
         if (description.isBlank() || from.isBlank() || to.isBlank()) {
-            System.out.println("description, /from, and /to cannot be empty.");
-            return null;
+            throw new PennyException("Event description, /from, and /to cannot be empty.");
         }
 
         return new EventTask(description, from, to);

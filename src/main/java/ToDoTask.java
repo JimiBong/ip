@@ -5,10 +5,9 @@ public class ToDoTask extends Task {
         this.icon = "T";
     }
 
-    public static ToDoTask create(String arguments) {
+    public static ToDoTask create(String arguments) throws PennyException {
         if (arguments.isBlank()) {
-            System.out.println("todo description cannot be empty.");
-            return null;
+            throw new PennyException("Todo description cannot be empty.");
         }
         return new ToDoTask(arguments);
     }
