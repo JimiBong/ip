@@ -77,7 +77,20 @@ public class Penny {
             Task task = list.get(index);
             task.unmarkAsDone();
             System.out.println("Marked as done: " + task);
+        }
 
+        else if (command.equalsIgnoreCase("delete")) {
+            if (!isInteger(arguments)) {
+                throw new PennyException("Unmark expects a number");
+            }
+
+            int index = Integer.parseInt(arguments) - 1;
+            if (index < 0 || index >= list.size()) {
+                throw new PennyException("Unmark out of bounds");
+            }
+
+            Task task = list.remove(index);
+            System.out.println("Deleted task: " + task);
         }
 
         else if (command.equalsIgnoreCase("todo") ||
