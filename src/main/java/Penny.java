@@ -10,115 +10,104 @@ public class Penny {
 
         while (true) {
             try {
-                scanForInput(scanner, list);
+                boolean keepRunning = scanForInput(scanner, list);
+                if (!keepRunning) {
+                    break;
+                }
             } catch (PennyException e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
-    private static void scanForInput(Scanner scanner, ArrayList<Task> list) throws PennyException {
+    private static boolean scanForInput(Scanner scanner, ArrayList<Task> list) throws PennyException {
         String input = scanner.nextLine();
         String[] parts = input.split("\\s+", 2); // Split by one or more spaces
-        String command = parts[0];
+        Command command = Command.parse(parts[0]);
         String arguments = parts.length > 1 ? parts[1] : "";
 
-        if (command.isBlank()) {
-            throw new PennyException("Sorry I didn't quite catch that.");
-        }
+        switch (command) {
+            case BYE:
+                System.out.println("Bye! See you soon!");
+                return false;
 
-        if (command.equalsIgnoreCase("bye")) {
-            System.out.println("Bye! See you soon!");
-            return;
-        }
+            case LIST:
+                if (list.isEmpty()) {
+                    throw new PennyException("There are no tasks on your list");
+                }
 
-        else if (command.equalsIgnoreCase("hi") ||
-            command.equalsIgnoreCase("hello")) {
+                for (int i = 0; i < list.size(); i++) {
+                    System.out.println((i + 1) + ". " + list.get(i));
+                }
+                return true;
 
-            System.out.println("Hi");
-            return;
-        }
+            case MARK:
+                if (!isInteger(arguments)) {
+                    throw new PennyException("Mark expects a number");
+                }
 
-        else if (command.equalsIgnoreCase("list")) {
-            if (list.isEmpty()) {
-                throw new PennyException("There are no tasks on your list.");
-            }
+                int markIndex = Integer.parseInt(arguments) - 1;
+                if (markIndex < 0 || markIndex >= list.size()) {
+                    throw new PennyException("Mark out of bounds");
+                }
 
-            for (int i = 0; i < list.size(); i++) {
-                System.out.println((i + 1) + ". " + list.get(i));
-            }
-        }
+                Task markedTask = list.get(markIndex);
+                markedTask.markAsDone();
+                System.out.println("Marked as done: " + markedTask);
+                return true;
 
-        else if (command.equalsIgnoreCase("mark")) {
-            if (!isInteger(arguments)) {
-                throw new PennyException("Mark expects a number");
-            }
+            case UNMARK:
+                if (!isInteger(arguments)) {
+                    throw new PennyException("Unmark expects a number");
+                }
 
-            int index = Integer.parseInt(arguments) - 1;
-            if (index < 0 || index >= list.size()) {
-                throw new PennyException("Mark out of bounds");
-            }
+                int unmarkIndex = Integer.parseInt(arguments) - 1;
+                if (unmarkIndex < 0 || unmarkIndex >= list.size()) {
+                    throw new PennyException("Unmark out of bounds");
+                }
 
-            Task task = list.get(index);
-            task.markAsDone();
-            System.out.println("Marked as done: " + task);
-        }
+                Task unmarkedTask = list.get(unmarkIndex);
+                unmarkedTask.unmarkAsDone();
+                System.out.println("Marked as done: " + unmarkedTask);
+                return true;
 
-        else if (command.equalsIgnoreCase("unmark")) {
-            if (!isInteger(arguments)) {
-                throw new PennyException("Unmark expects a number");
-            }
+            case DELETE:
+                if (!isInteger(arguments)) {
+                    throw new PennyException("Delete expects a number");
+                }
 
-            int index = Integer.parseInt(arguments) - 1;
-            if (index < 0 || index >= list.size()) {
-                throw new PennyException("Unmark out of bounds");
-            }
+                int deleteIndex = Integer.parseInt(arguments) - 1;
+                if (deleteIndex < 0 || deleteIndex >= list.size()) {
+                    throw new PennyException("Delete out of bounds");
+                }
 
-            Task task = list.get(index);
-            task.unmarkAsDone();
-            System.out.println("Marked as done: " + task);
-        }
+                Task deletedTask = list.remove(deleteIndex);
+                System.out.println("Deleted: " + deletedTask);
+                return true;
 
-        else if (command.equalsIgnoreCase("delete")) {
-            if (!isInteger(arguments)) {
-                throw new PennyException("Unmark expects a number");
-            }
+            case TODO:
+                Task toDoTask = ToDoTask.create(arguments);
+                list.add(toDoTask);
+                System.out.println("Added: " + toDoTask);
+                return true;
 
-            int index = Integer.parseInt(arguments) - 1;
-            if (index < 0 || index >= list.size()) {
-                throw new PennyException("Unmark out of bounds");
-            }
+            case DEADLINE:
+                Task deadlineTask = DeadlineTask.create(arguments);
+                list.add(deadlineTask);
+                System.out.println("Added: " + deadlineTask);
+                return true;
 
-            Task task = list.remove(index);
-            System.out.println("Deleted task: " + task);
-        }
+            case EVENT:
+                Task eventTask = EventTask.create(arguments);
+                list.add(eventTask);
+                System.out.println("Added: " + eventTask);
+                return true;
 
-        else if (command.equalsIgnoreCase("todo") ||
-                command.equalsIgnoreCase("deadline") ||
-                command.equalsIgnoreCase("event")) {
+            case UNKNOWN:
+                throw new PennyException("I don't think I understand.");
 
-            if (arguments.isBlank()) {
-                throw new PennyException("Task description cannot be blank");
-            }
-
-            Task task = null;
-
-            if (command.equalsIgnoreCase("todo")) {
-                task = ToDoTask.create(arguments);
-            }
-            else if (command.equalsIgnoreCase("deadline")) {
-                task = DeadlineTask.create(arguments);
-            }
-            else if (command.equalsIgnoreCase("event")) {
-                task = EventTask.create(arguments);
-            }
-
-            list.add(task);
-            System.out.println("Added: " + task);
-
-        }
-        else {
-            throw new PennyException("I don't think I understand.");
+            default:
+                return true;
         }
     }
 

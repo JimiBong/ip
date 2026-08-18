@@ -7,7 +7,7 @@ public class ToDoTask extends Task {
 
     public static ToDoTask create(String arguments) throws PennyException {
         if (arguments.isBlank()) {
-            throw new PennyException("Todo description cannot be empty.");
+            throw new PennyException("Todo description cannot be empty");
         }
         return new ToDoTask(arguments);
     }

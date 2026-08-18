@@ -17,7 +17,7 @@ public class DeadlineTask extends Task{
         String deadline = parts[1].trim();
 
         if (description.isBlank() || deadline.isBlank()) {
-            throw new PennyException("Deadline description and /by cannot be empty.");
+            throw new PennyException("Deadline description and /by cannot be empty");
         }
 
         return new DeadlineTask(description, deadline);

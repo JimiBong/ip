@@ -26,7 +26,7 @@ public class EventTask extends Task{
         String to = parts[1].trim();
 
         if (description.isBlank() || from.isBlank() || to.isBlank()) {
-            throw new PennyException("Event description, /from, and /to cannot be empty.");
+            throw new PennyException("Event description, /from, and /to cannot be empty");
         }
 
         return new EventTask(description, from, to);
