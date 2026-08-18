@@ -3,13 +3,7 @@ import java.util.Scanner;
 
 public class Penny {
     public static void main(String[] args) {
-        String banner = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        banner += "\nHi, I'm Penny, what can I do for you?";
-        System.out.println(banner);
+        System.out.println("Hi, I'm Penny, what can I do for you?");
 
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> list = new ArrayList<>();
