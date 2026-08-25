@@ -1,6 +1,7 @@
 public enum Command {
     BYE,
     LIST,
+    DUE,
     MARK,
     UNMARK,
     DELETE,

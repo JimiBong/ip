@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 public class Task {
     protected String description;
     protected boolean isDone;
@@ -25,6 +27,10 @@ public class Task {
 
     public boolean isDone() {
         return isDone;
+    }
+
+    public boolean isDueOn(LocalDateTime dateTime) {
+        return false;
     }
 
     @Override

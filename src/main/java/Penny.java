@@ -1,4 +1,5 @@
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,7 +13,6 @@ public class Penny {
 
         // Load tasks
         String save = FileManager.readData(FILE_NAME);
-        System.out.println(save);
         if (!save.isEmpty()) {
             String[] savedCommands = save.split("\n");
             for (String command : savedCommands) {
@@ -67,6 +67,35 @@ public class Penny {
 
                 for (int i = 0; i < tasks.size(); i++) {
                     System.out.println((i + 1) + ". " + tasks.get(i));
+                }
+                return true;
+
+            case DUE:
+                if (loading) {
+                    return true;
+                }
+
+                if (!arguments.contains("/by")) {
+                    throw new PennyException("Deadlines need '/by'");
+                }
+
+                String dueBy = arguments.split("/by", 2)[1];
+                if (dueBy.isBlank()) {
+                    throw new PennyException("Due /by cannot be empty");
+                }
+
+                LocalDateTime dueDate = DateTime.parse(dueBy);
+
+                if (tasks.isEmpty()) {
+                    throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
+                }
+
+                for (int i = 0; i < tasks.size(); i++) {
+                    String taskString = (i + 1) + ". " + tasks.get(i);
+                    if (tasks.get(i).isDueOn(dueDate)) {
+                        taskString += " (DUE!)";
+                    }
+                    System.out.println(taskString);
                 }
                 return true;
 
