@@ -1,5 +1,6 @@
+package penny;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Parser {
     public static boolean handleInput(TaskList tasks, String input, boolean loading) throws PennyException {

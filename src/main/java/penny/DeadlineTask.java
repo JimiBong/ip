@@ -1,5 +1,6 @@
+package penny;
+
 import java.time.LocalDateTime;
-import java.util.Locale;
 
 public class DeadlineTask extends Task{
     protected LocalDateTime deadline;

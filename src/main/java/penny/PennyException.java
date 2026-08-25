@@ -1,3 +1,5 @@
+package penny;
+
 public class PennyException extends Exception {
 
     public PennyException(String message) {

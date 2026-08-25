@@ -1,3 +1,5 @@
+package penny;
+
 import java.time.LocalDateTime;
 
 public class EventTask extends Task{

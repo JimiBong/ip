@@ -1,3 +1,5 @@
+package penny;
+
 public enum Command {
     BYE,
     LIST,
@@ -10,7 +12,7 @@ public enum Command {
     EVENT,
     UNKNOWN;
 
-    public static Command parse(String commandString) throws PennyException{
+    public static Command parse(String commandString) throws PennyException {
         if (commandString.isBlank()) {
             throw new PennyException("Sorry I didn't quite catch that.");
         }
