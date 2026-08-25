@@ -11,3 +11,12 @@ list
 unmark 1
 list
 due 25082026
+list
+due 25082026
+list
+delete 1
+list
+delete 2
+list delete 1
+list ddd
+delete 1

@@ -1,5 +1,6 @@
 package penny;
 
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 public class Parser {
@@ -40,16 +41,24 @@ public class Parser {
                 LocalDateTime dueDate = DateTime.parse(arguments);
 
                 if (tasks.isEmpty()) {
+                    throw new PennyException("There are no tasks on your list");
+                }
+
+                ArrayList<String> matchingTasks = new ArrayList<>();
+
+                for (int i = 0; i < tasks.size(); i++) {
+                    Task task = tasks.get(i);
+                    if (task.isDueOn(dueDate)) {
+                        matchingTasks.add((i + 1) + ". " + task);
+                    }
+                }
+
+                if (matchingTasks.isEmpty()) {
                     throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
                 }
 
-                for (int i = 0; i < tasks.size(); i++) {
-                    String taskString = (i + 1) + ". " + tasks.get(i);
-                    if (tasks.get(i).isDueOn(dueDate)) {
-                        taskString += " (DUE!)";
-                    }
-                    UI.display(taskString);
-                }
+                UI.display(String.join("\n", matchingTasks));
+
                 return true;
 
             case MARK:
