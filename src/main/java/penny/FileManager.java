@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileManager {
-    private static final Path SAVE_PATH = Paths.get("src", "main", "java", "penny");
+    private static final Path SAVE_PATH = Paths.get("./");
 
     public static void writeData(String fileName, String content) {
         Path filePath = SAVE_PATH.resolve(fileName);
