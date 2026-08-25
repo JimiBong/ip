@@ -1,7 +1,7 @@
 public class ToDoTask extends Task {
 
-    protected ToDoTask(String description) {
-        super(description);
+    protected ToDoTask(String arguments) {
+        super(arguments.trim());
         this.icon = "T";
     }
 
