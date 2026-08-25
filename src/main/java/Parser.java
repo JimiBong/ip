@@ -32,16 +32,11 @@ public class Parser {
                     return true;
                 }
 
-                if (!arguments.contains("/by")) {
-                    throw new PennyException("Deadlines need '/by'");
+                if (arguments.isBlank()) {
+                    throw new PennyException("Due date cannot be empty");
                 }
 
-                String dueBy = arguments.split("/by", 2)[1];
-                if (dueBy.isBlank()) {
-                    throw new PennyException("Due /by cannot be empty");
-                }
-
-                LocalDateTime dueDate = DateTime.parse(dueBy);
+                LocalDateTime dueDate = DateTime.parse(arguments);
 
                 if (tasks.isEmpty()) {
                     throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
