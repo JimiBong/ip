@@ -1,13 +1,11 @@
 todo 1
-deadline 2 /by 26082026
 list
-due /by 25082026
-due /by 26082026
+mark 1
+deadline 2 /by 25082026
+list
+list
+list
 mark 2
 event 3 /from 25082026 /to 26082026 0900
-due /by 25082026
-due /by 26082026
 list
-mark 3
-mark 1
-list
+unmark 1
