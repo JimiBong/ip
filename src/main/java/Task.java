@@ -4,7 +4,7 @@ public class Task {
     protected String icon = "";
 
     protected Task(String description) {
-        this.description = description.trim();
+        this.description = description;
         this.isDone = false;
         this.icon = "";
     }

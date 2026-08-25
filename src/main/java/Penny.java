@@ -1,18 +1,43 @@
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Penny {
+    private static final String FILE_NAME = "commands.txt";
+
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<String> commands = new ArrayList<>();
+
+        // Load tasks
+        String save = FileManager.readData(FILE_NAME);
+        System.out.println(save);
+        if (!save.isEmpty()) {
+            String[] savedCommands = save.split("\n");
+            for (String command : savedCommands) {
+                try {
+                    handleInput(tasks, command, true);
+                    commands.add(command);
+                } catch (PennyException e) {
+                    System.out.println("Error loading command: " + e.getMessage());
+                }
+            }
+            System.out.println("I have loaded your tasks from our previous session.");
+        }
+
         System.out.println("Hi, I'm Penny, what can I do for you?");
 
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> list = new ArrayList<>();
-
+        // Handle input
         while (true) {
             try {
-                boolean keepRunning = scanForInput(scanner, list);
+                String input = scanner.nextLine();
+                boolean keepRunning = handleInput(tasks, input, false);
                 if (!keepRunning) {
                     break;
+                } else {
+                    commands.add(input); // Input is a valid command that is not bye
+                    FileManager.writeData(FILE_NAME, String.join("\n", commands)); // Save commands
                 }
             } catch (PennyException e) {
                 System.out.println(e.getMessage());
@@ -20,8 +45,8 @@ public class Penny {
         }
     }
 
-    private static boolean scanForInput(Scanner scanner, ArrayList<Task> list) throws PennyException {
-        String input = scanner.nextLine();
+    private static boolean handleInput(ArrayList<Task> tasks, String input, boolean loading) throws PennyException {
+
         String[] parts = input.split("\\s+", 2); // Split by one or more spaces
         Command command = Command.parse(parts[0]);
         String arguments = parts.length > 1 ? parts[1] : "";
@@ -32,12 +57,16 @@ public class Penny {
                 return false;
 
             case LIST:
-                if (list.isEmpty()) {
+                if (loading) {
+                    return true;
+                }
+
+                if (tasks.isEmpty()) {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                for (int i = 0; i < list.size(); i++) {
-                    System.out.println((i + 1) + ". " + list.get(i));
+                for (int i = 0; i < tasks.size(); i++) {
+                    System.out.println((i + 1) + ". " + tasks.get(i));
                 }
                 return true;
 
@@ -47,13 +76,13 @@ public class Penny {
                 }
 
                 int markIndex = Integer.parseInt(arguments) - 1;
-                if (markIndex < 0 || markIndex >= list.size()) {
+                if (markIndex < 0 || markIndex >= tasks.size()) {
                     throw new PennyException("Mark out of bounds");
                 }
 
-                Task markedTask = list.get(markIndex);
+                Task markedTask = tasks.get(markIndex);
                 markedTask.markAsDone();
-                System.out.println("Marked as done: " + markedTask);
+                displayText("Marked as done: " + markedTask, loading);
                 return true;
 
             case UNMARK:
@@ -62,13 +91,13 @@ public class Penny {
                 }
 
                 int unmarkIndex = Integer.parseInt(arguments) - 1;
-                if (unmarkIndex < 0 || unmarkIndex >= list.size()) {
+                if (unmarkIndex < 0 || unmarkIndex >= tasks.size()) {
                     throw new PennyException("Unmark out of bounds");
                 }
 
-                Task unmarkedTask = list.get(unmarkIndex);
+                Task unmarkedTask = tasks.get(unmarkIndex);
                 unmarkedTask.unmarkAsDone();
-                System.out.println("Marked as done: " + unmarkedTask);
+                displayText("Marked as done: " + unmarkedTask, loading);
                 return true;
 
             case DELETE:
@@ -77,30 +106,30 @@ public class Penny {
                 }
 
                 int deleteIndex = Integer.parseInt(arguments) - 1;
-                if (deleteIndex < 0 || deleteIndex >= list.size()) {
+                if (deleteIndex < 0 || deleteIndex >= tasks.size()) {
                     throw new PennyException("Delete out of bounds");
                 }
 
-                Task deletedTask = list.remove(deleteIndex);
-                System.out.println("Deleted: " + deletedTask);
+                Task deletedTask = tasks.remove(deleteIndex);
+                displayText("Deleted: " + deletedTask, loading);
                 return true;
 
             case TODO:
                 Task toDoTask = ToDoTask.create(arguments);
-                list.add(toDoTask);
-                System.out.println("Added: " + toDoTask);
+                tasks.add(toDoTask);
+                displayText("Added: " + toDoTask, loading);
                 return true;
 
             case DEADLINE:
                 Task deadlineTask = DeadlineTask.create(arguments);
-                list.add(deadlineTask);
-                System.out.println("Added: " + deadlineTask);
+                tasks.add(deadlineTask);
+                displayText("Added: " + deadlineTask, loading);
                 return true;
 
             case EVENT:
                 Task eventTask = EventTask.create(arguments);
-                list.add(eventTask);
-                System.out.println("Added: " + eventTask);
+                tasks.add(eventTask);
+                displayText("Added: " + eventTask, loading);
                 return true;
 
             case UNKNOWN:
@@ -108,6 +137,12 @@ public class Penny {
 
             default:
                 return true;
+        }
+    }
+
+    public static void displayText(String text, boolean loading) {
+        if (!loading) {
+            System.out.println(text);
         }
     }
 
