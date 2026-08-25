@@ -1,8 +1,10 @@
-public class EventTask extends Task{
-    protected String from;
-    protected String to;
+import java.time.LocalDateTime;
 
-    protected EventTask(String description, String from, String to) {
+public class EventTask extends Task{
+    protected LocalDateTime from;
+    protected LocalDateTime to;
+
+    protected EventTask(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
         this.from = from;
         this.to = to;
@@ -29,11 +31,18 @@ public class EventTask extends Task{
             throw new PennyException("Event description, /from, and /to cannot be empty");
         }
 
-        return new EventTask(description, from, to);
+        return new EventTask(description, DateTime.parse(from), DateTime.parse(to));
+    }
+
+    @Override
+    public boolean isDueOn(LocalDateTime dateTime) {
+        return this.from.toLocalDate().equals(dateTime.toLocalDate());
     }
 
     @Override
     public String toString(){
-        return super.toString() + " (from: " + this.from + " | to: " + this.to + ")";
+        return super.toString()
+                + " (from: " + DateTime.format(this.from)
+                + " | to: " + DateTime.format(this.to) + ")";
     }
 }

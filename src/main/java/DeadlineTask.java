@@ -1,7 +1,10 @@
-public class DeadlineTask extends Task{
-    protected String  deadline;
+import java.time.LocalDateTime;
+import java.util.Locale;
 
-    protected DeadlineTask(String description, String deadline) {
+public class DeadlineTask extends Task{
+    protected LocalDateTime deadline;
+
+    protected DeadlineTask(String description, LocalDateTime deadline) {
         super(description);
         this.deadline = deadline;
         this.icon = "D";
@@ -20,11 +23,17 @@ public class DeadlineTask extends Task{
             throw new PennyException("Deadline description and /by cannot be empty");
         }
 
-        return new DeadlineTask(description, deadline);
+        return new DeadlineTask(description, DateTime.parse(deadline));
+    }
+
+    @Override
+    public boolean isDueOn(LocalDateTime dateTime) {
+        return this.deadline.toLocalDate().equals(dateTime.toLocalDate());
     }
 
     @Override
     public String toString(){
-        return super.toString() + " (by: " + this.deadline + ")";
+        return super.toString()
+                + " (by: " + DateTime.format(this.deadline) + ")";
     }
 }
