@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 public class Parser {
-    public static boolean handleInput(TaskList tasks, String input, boolean loading) throws PennyException {
+    public static boolean handleInput(TaskList tasks, String input, boolean isLoading) throws PennyException {
 
         String[] parts = input.split("\\s+", 2); // Split by one or more spaces
         Command command = Command.parse(parts[0]);
@@ -16,7 +16,7 @@ public class Parser {
                 return false;
 
             case LIST:
-                if (loading) {
+                if (isLoading) {
                     return true;
                 }
 
@@ -30,7 +30,7 @@ public class Parser {
                 return true;
 
             case DUE:
-                if (loading) {
+                if (isLoading) {
                     return true;
                 }
 
@@ -73,7 +73,7 @@ public class Parser {
 
                 Task markedTask = tasks.get(markIndex);
                 markedTask.markAsDone();
-                if (!loading) {
+                if (!isLoading) {
                     UI.display("Marked as done: " + markedTask);
                 }
                 return true;
@@ -90,7 +90,7 @@ public class Parser {
 
                 Task unmarkedTask = tasks.get(unmarkIndex);
                 unmarkedTask.unmarkAsDone();
-                if (!loading) {
+                if (!isLoading) {
                     UI.display("Marked as done: " + unmarkedTask);
                 }
                 return true;
@@ -106,7 +106,7 @@ public class Parser {
                 }
 
                 Task deletedTask = tasks.remove(deleteIndex);
-                if (!loading) {
+                if (!isLoading) {
                     UI.display("Deleted: " + deletedTask);
                 }
                 return true;
@@ -114,7 +114,7 @@ public class Parser {
             case TODO:
                 Task toDoTask = ToDoTask.create(arguments);
                 tasks.add(toDoTask);
-                if (!loading) {
+                if (!isLoading) {
                     UI.display("Added: " + toDoTask);
                 }
                 return true;
@@ -122,7 +122,7 @@ public class Parser {
             case DEADLINE:
                 Task deadlineTask = DeadlineTask.create(arguments);
                 tasks.add(deadlineTask);
-                if (!loading) {
+                if (!isLoading) {
                     UI.display("Added: " + deadlineTask);
                 }
                 return true;
@@ -130,7 +130,7 @@ public class Parser {
             case EVENT:
                 Task eventTask = EventTask.create(arguments);
                 tasks.add(eventTask);
-                if (!loading) {
+                if (!isLoading) {
                     UI.display("Added: " + eventTask);
                 }
                 return true;
