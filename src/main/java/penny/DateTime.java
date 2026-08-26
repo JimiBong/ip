@@ -6,10 +6,18 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Handles formatting and parsing of date time strings.
+ */
 public class DateTime {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MM yyyy HHmm");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MM yyyy");
 
+    /**
+     * Returns dateTime formatted as a string.
+     *
+     * @param dateTime date time to be formatted as a string.
+     */
     public static String format(LocalDateTime dateTime){
         if (dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dateTime.format(DATE_FORMATTER);
@@ -17,6 +25,12 @@ public class DateTime {
         return dateTime.format(DATE_TIME_FORMATTER);
     }
 
+    /**
+     * Returns dateTime obtained from parsing a string.
+     *
+     * @param input string to be parsed into a date.
+     * @throws PennyException if the string format is not supported.
+     */
     public static LocalDateTime parse(String input) throws PennyException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy HHmm");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");

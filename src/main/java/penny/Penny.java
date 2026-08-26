@@ -2,7 +2,9 @@ package penny;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * Loads in commands from previous sessions, and keeps scanning for user input.
+ */
 public class Penny {
     private static final String FILE_NAME = "commands.txt";
 

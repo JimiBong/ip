@@ -3,7 +3,20 @@ package penny;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
+
+/**
+ * Parses input from user, identifying the command used and the arguments passed behind.
+ */
 public class Parser {
+    /**
+     * Returns a boolean on whether to keep running penny.
+     *
+     * @param tasks tasklist to operate on.
+     * @param input string entered by user.
+     * @param loading boolean if loading in commands from previous sessions.
+     * @return boolean on whether to keep running penny.
+     * @throws PennyException If the command arguments are wrongly formatted.
+     */
     public static boolean handleInput(TaskList tasks, String input, boolean loading) throws PennyException {
 
         String[] parts = input.split("\\s+", 2); // Split by one or more spaces

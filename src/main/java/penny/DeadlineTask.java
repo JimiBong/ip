@@ -2,6 +2,9 @@ package penny;
 
 import java.time.LocalDateTime;
 
+/**
+ * DeadlineTask with a description and a deadline date.
+ */
 public class DeadlineTask extends Task{
     protected LocalDateTime deadline;
 
@@ -11,6 +14,13 @@ public class DeadlineTask extends Task{
         this.icon = "D";
     }
 
+    /**
+     * Returns DeadlineTask.
+     *
+     * @param arguments description /by deadline of deadline task.
+     * @return DeadlineTask.
+     * @throws PennyException if /by is missing, or description or deadline is empty.
+     */
     public static DeadlineTask create(String arguments) throws PennyException {
         if (!arguments.contains("/by")) {
             throw new PennyException("Deadlines need '/by'");
