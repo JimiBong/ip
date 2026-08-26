@@ -2,6 +2,9 @@ package penny;
 
 import java.time.LocalDateTime;
 
+/**
+ * Parent class for all tasks.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;
@@ -13,6 +16,11 @@ public class Task {
         this.icon = "";
     }
 
+    /**
+     * Mark a task as done.
+     *
+     * @throws PennyException if the task is already marked as done.
+     */
     public void markAsDone() throws PennyException{
         if (isDone) {
             throw new PennyException("Task is already marked as done");
@@ -20,6 +28,11 @@ public class Task {
         isDone = true;
     }
 
+    /**
+     * Mark a task as undone.
+     *
+     * @throws PennyException if the task is already marked as undone.
+     */
     public void unmarkAsDone() throws PennyException{
         if (!isDone) {
             throw new PennyException("Task is already marked as done");
@@ -27,14 +40,30 @@ public class Task {
         isDone = false;
     }
 
+    /**
+     * Returns boolean if the task is marked as done.
+     *
+     * @return boolean if the task is marked as done.
+     */
     public boolean isDone() {
         return isDone;
     }
 
+    /**
+     * Returns boolean if the task is due on dateTime.
+     *
+     * @param dateTime the date to check if the task is due on.
+     * @return boolean if the task is due on dateTime.
+     */
     public boolean isDueOn(LocalDateTime dateTime) {
         return false;
     }
 
+    /**
+     * Returns a string representation of the task.
+     *
+     * @return a string representation of the task.
+     */
     @Override
     public String toString() {
         String doneIcon = isDone ? "X" : " ";

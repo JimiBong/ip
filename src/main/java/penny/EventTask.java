@@ -2,6 +2,9 @@ package penny;
 
 import java.time.LocalDateTime;
 
+/**
+ * EventTask with a description, a from date and a to date.
+ */
 public class EventTask extends Task{
     protected LocalDateTime from;
     protected LocalDateTime to;
@@ -13,6 +16,13 @@ public class EventTask extends Task{
         this.icon = "E";
     }
 
+    /**
+     * Returns EventTask.
+     *
+     * @param arguments description /from from /to to of EventTask.
+     * @return Eventtask.
+     * @throws PennyException if /from or /to is missing, or description or from or to is empty.
+     */
     public static EventTask create(String arguments) throws PennyException {
         int fromIndex = arguments.indexOf("/from");
         int toIndex = arguments.indexOf("/to");
