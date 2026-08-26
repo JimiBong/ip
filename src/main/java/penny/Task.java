@@ -35,6 +35,16 @@ public class Task {
         return false;
     }
 
+    /**
+     * Returns boolean on whether the task toString contains keyword.
+     *
+     * @param keyword string keyword to check for.
+     * @return boolean on whether the task toString contains keyword.
+     */
+    public boolean hasKeyword(String keyword) {
+        return toString().contains(keyword);
+    }
+
     @Override
     public String toString() {
         String doneIcon = isDone ? "X" : " ";
