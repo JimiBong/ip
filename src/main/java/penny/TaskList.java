@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Represents a list of tasks using an ArrayList.
  */
 public class TaskList {
-    private ArrayList<Task> tasks = new ArrayList<>();
+    private final ArrayList<Task> tasks = new ArrayList<>();
 
     /**
      * Returns boolean if the task list is empty.

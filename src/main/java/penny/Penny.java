@@ -8,10 +8,10 @@ import java.util.Scanner;
 public class Penny {
     private static final String FILE_NAME = "commands.txt";
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         ArrayList<String> commands = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
-        TaskList tasklist = new TaskList();
+        TaskList taskList = new TaskList();
 
         // Load tasks
         String save = FileManager.readData(FILE_NAME);
@@ -19,7 +19,7 @@ public class Penny {
             String[] savedCommands = save.split("\n");
             for (String command : savedCommands) {
                 try {
-                    Parser.handleInput(tasklist, command, true);
+                    Parser.handleInput(taskList, command, true);
                     commands.add(command);
                 } catch (PennyException e) {
                     System.out.println("Error loading command: " + e.getMessage());
@@ -34,8 +34,8 @@ public class Penny {
         while (true) {
             try {
                 String input = scanner.nextLine();
-                boolean keepRunning = Parser.handleInput(tasklist, input, false);
-                if (!keepRunning) {
+                boolean isRunning = Parser.handleInput(taskList, input, false);
+                if (!isRunning) {
                     break;
                 } else {
                     commands.add(input); // Input is a valid command that is not bye

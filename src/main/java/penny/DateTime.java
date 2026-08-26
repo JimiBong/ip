@@ -10,8 +10,8 @@ import java.time.format.DateTimeParseException;
  * Handles formatting and parsing of date time strings.
  */
 public class DateTime {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MM yyyy HHmm");
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MM yyyy");
+    private static final DateTimeFormatter FORMAT_DATE_TIME = DateTimeFormatter.ofPattern("dd MM yyyy HHmm");
+    private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd MM yyyy");
 
     /**
      * Returns dateTime formatted as a string.
@@ -20,9 +20,9 @@ public class DateTime {
      */
     public static String format(LocalDateTime dateTime){
         if (dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
-            return dateTime.format(DATE_FORMATTER);
+            return dateTime.format(FORMAT_DATE);
         }
-        return dateTime.format(DATE_TIME_FORMATTER);
+        return dateTime.format(FORMAT_DATE_TIME);
     }
 
     /**
