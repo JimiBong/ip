@@ -56,17 +56,47 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> matchingTasks = new ArrayList<>();
+                ArrayList<String> dueTasks = new ArrayList<>();
 
                 for (int i = 0; i < tasks.size(); i++) {
                     Task task = tasks.get(i);
                     if (task.isDueOn(dueDate)) {
+                        dueTasks.add((i + 1) + ". " + task);
+                    }
+                }
+
+                if (dueTasks.isEmpty()) {
+                    throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
+                }
+
+                UI.display(String.join("\n", dueTasks));
+
+                return true;
+
+            case FIND:
+                if (loading) {
+                    return true;
+                }
+
+                if (arguments.isEmpty()) {
+                    throw new PennyException("Find keyword cannot be empty");
+                }
+
+                if (tasks.isEmpty()) {
+                    throw new PennyException("There are no tasks on your list");
+                }
+
+                ArrayList<String> matchingTasks = new ArrayList<>();
+
+                for (int i = 0; i < tasks.size(); i++) {
+                    Task task = tasks.get(i);
+                    if (task.hasKeyword(arguments.trim())) {
                         matchingTasks.add((i + 1) + ". " + task);
                     }
                 }
 
                 if (matchingTasks.isEmpty()) {
-                    throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
+                    throw new PennyException("No matching tasks on your list");
                 }
 
                 UI.display(String.join("\n", matchingTasks));

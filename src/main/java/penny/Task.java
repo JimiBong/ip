@@ -60,6 +60,16 @@ public class Task {
     }
 
     /**
+     * Returns boolean on whether the task toString contains keyword.
+     *
+     * @param keyword string keyword to check for.
+     * @return boolean on whether the task toString contains keyword.
+     */
+    public boolean hasKeyword(String keyword) {
+        return toString().contains(keyword);
+    }
+
+    /**
      * Returns a string representation of the task.
      *
      * @return a string representation of the task.
