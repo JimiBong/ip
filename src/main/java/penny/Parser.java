@@ -74,7 +74,7 @@ public class Parser {
                 return true;
 
             case FIND:
-                if (loading) {
+                if (isLoading) {
                     return true;
                 }
 
