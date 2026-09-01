@@ -56,7 +56,22 @@ test {
 }
 
 application {
+    mainClass = 'penny.Launcher'
+}
+
+tasks.register('runGui', JavaExec) {
+    group = 'application'
+    description = 'Runs the JavaFX GUI version of Penny.'
+    mainClass = 'penny.Launcher'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+tasks.register('runCli', JavaExec) {
+    group = 'application'
+    description = 'Runs the text-based CLI version of Penny.'
     mainClass = 'penny.Penny'
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
 }
 
 jar {
@@ -68,8 +83,4 @@ jar {
 
 shadowJar {
     archiveFileName = 'penny.jar'
-}
-
-run {
-    standardInput = System.in
 }
