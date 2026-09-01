@@ -9,41 +9,41 @@ import java.time.LocalDateTime;
  */
 public class Parser {
     /**
-     * Returns a boolean on whether to keep running penny.
+     * Processes a line of user input against the given task list.
      *
      * @param tasks tasklist to operate on.
      * @param input string entered by user.
      * @param isLoading boolean if loading in commands from previous sessions.
-     * @return boolean on whether to keep running penny.
+     * @return the response message and whether Penny should stop running.
      * @throws PennyException If the command arguments are wrongly formatted.
      */
-    public static boolean handleInput(TaskList tasks, String input, boolean isLoading) throws PennyException {
+    public static ParseResult handleInput(TaskList tasks, String input, boolean isLoading) throws PennyException {
         String[] parts = input.split("\\s+", 2); // Split by one or more spaces
         Command command = Command.parse(parts[0]);
         String arguments = parts.length > 1 ? parts[1] : "";
 
         switch (command) {
             case BYE:
-                UI.display("Bye! See you soon!");
-                return false;
+                return new ParseResult("Bye! See you soon!", true);
 
             case LIST:
                 if (isLoading) {
-                    return true;
+                    return new ParseResult("", false);
                 }
 
                 if (tasks.isEmpty()) {
                     throw new PennyException("There are no tasks on your list");
                 }
 
+                ArrayList<String> listedTasks = new ArrayList<>();
                 for (int i = 0; i < tasks.size(); i++) {
-                    UI.display((i + 1) + ". " + tasks.get(i));
+                    listedTasks.add((i + 1) + ". " + tasks.get(i));
                 }
-                return true;
+                return new ParseResult(String.join("\n", listedTasks), false);
 
             case DUE:
                 if (isLoading) {
-                    return true;
+                    return new ParseResult("", false);
                 }
 
                 if (arguments.isBlank()) {
@@ -69,13 +69,11 @@ public class Parser {
                     throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
                 }
 
-                UI.display(String.join("\n", dueTasks));
-
-                return true;
+                return new ParseResult(String.join("\n", dueTasks), false);
 
             case FIND:
                 if (isLoading) {
-                    return true;
+                    return new ParseResult("", false);
                 }
 
                 if (arguments.isEmpty()) {
@@ -99,9 +97,7 @@ public class Parser {
                     throw new PennyException("No matching tasks on your list");
                 }
 
-                UI.display(String.join("\n", matchingTasks));
-
-                return true;
+                return new ParseResult(String.join("\n", matchingTasks), false);
 
             case MARK:
                 if (!isInteger(arguments)) {
@@ -115,10 +111,7 @@ public class Parser {
 
                 Task markedTask = tasks.get(markIndex);
                 markedTask.markAsDone();
-                if (!isLoading) {
-                    UI.display("Marked as done: " + markedTask);
-                }
-                return true;
+                return new ParseResult(isLoading ? "" : "Marked as done: " + markedTask, false);
 
             case UNMARK:
                 if (!isInteger(arguments)) {
@@ -132,10 +125,7 @@ public class Parser {
 
                 Task unmarkedTask = tasks.get(unmarkIndex);
                 unmarkedTask.unmarkAsDone();
-                if (!isLoading) {
-                    UI.display("Marked as done: " + unmarkedTask);
-                }
-                return true;
+                return new ParseResult(isLoading ? "" : "Marked as done: " + unmarkedTask, false);
 
             case DELETE:
                 if (!isInteger(arguments)) {
@@ -148,40 +138,28 @@ public class Parser {
                 }
 
                 Task deletedTask = tasks.remove(deleteIndex);
-                if (!isLoading) {
-                    UI.display("Deleted: " + deletedTask);
-                }
-                return true;
+                return new ParseResult(isLoading ? "" : "Deleted: " + deletedTask, false);
 
             case TODO:
                 Task toDoTask = ToDoTask.create(arguments);
                 tasks.add(toDoTask);
-                if (!isLoading) {
-                    UI.display("Added: " + toDoTask);
-                }
-                return true;
+                return new ParseResult(isLoading ? "" : "Added: " + toDoTask, false);
 
             case DEADLINE:
                 Task deadlineTask = DeadlineTask.create(arguments);
                 tasks.add(deadlineTask);
-                if (!isLoading) {
-                    UI.display("Added: " + deadlineTask);
-                }
-                return true;
+                return new ParseResult(isLoading ? "" : "Added: " + deadlineTask, false);
 
             case EVENT:
                 Task eventTask = EventTask.create(arguments);
                 tasks.add(eventTask);
-                if (!isLoading) {
-                    UI.display("Added: " + eventTask);
-                }
-                return true;
+                return new ParseResult(isLoading ? "" : "Added: " + eventTask, false);
 
             case UNKNOWN:
                 throw new PennyException("I don't think I understand.");
 
             default:
-                return true;
+                return new ParseResult("", false);
         }
     }
 
