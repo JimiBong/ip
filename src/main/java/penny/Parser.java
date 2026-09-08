@@ -1,8 +1,9 @@
 package penny;
 
-import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -183,14 +184,10 @@ public class Parser {
     }
 
     private static String formatNumbered(TaskList tasks, Predicate<Task> filter) {
-        ArrayList<String> lines = new ArrayList<>();
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (filter.test(task)) {
-                lines.add((i + 1) + ". " + task);
-            }
-        }
-        return String.join("\n", lines);
+        return IntStream.range(0, tasks.size())
+                .filter(i -> filter.test(tasks.get(i)))
+                .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                .collect(Collectors.joining("\n"));
     }
 
     public static boolean isInteger(String str) {
