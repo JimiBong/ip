@@ -27,10 +27,13 @@ public enum Command {
             throw new PennyException("Sorry I didn't quite catch that.");
         }
 
+        Command command;
         try {
-            return Command.valueOf(commandString.toUpperCase());
+            command = Command.valueOf(commandString.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return UNKNOWN;
+            command = UNKNOWN;
         }
+        assert command != null : "Command.parse should never return null";
+        return command;
     }
 }

@@ -44,6 +44,8 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert penny != null : "Penny instance must be injected via setPenny before handling input";
+
         String input = userInput.getText();
         ParseResult result = penny.respond(input);
         dialogContainer.getChildren().addAll(

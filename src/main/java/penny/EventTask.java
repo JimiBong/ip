@@ -30,11 +30,13 @@ public class EventTask extends Task{
         if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
             throw new PennyException("Events need '/from' followed by '/to'");
         }
+        assert toIndex > fromIndex : "'/to' should occur after '/from' at this point";
 
         String description = arguments.substring(0, fromIndex).trim();
 
         String remainder = arguments.substring(fromIndex + 5);
         String[] parts = remainder.split("/to", 2);
+        assert parts.length == 2 : "Splitting on '/to' after the indexOf() check should always yield 2 parts";
 
         String from = parts[0].trim();
         String to = parts[1].trim();

@@ -18,6 +18,9 @@ public class Parser {
      * @throws PennyException If the command arguments are wrongly formatted.
      */
     public static ParseResult handleInput(TaskList tasks, String input, boolean isLoading) throws PennyException {
+        assert tasks != null : "tasks must not be null";
+        assert input != null : "input must not be null";
+
         String[] parts = input.split("\\s+", 2); // Split by one or more spaces
         Command command = Command.parse(parts[0]);
         String arguments = parts.length > 1 ? parts[1] : "";

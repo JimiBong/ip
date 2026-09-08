@@ -26,6 +26,7 @@ public class Task {
             throw new PennyException("Task is already marked as done");
         }
         isDone = true;
+        assert isDone : "Task should be marked done after markAsDone()";
     }
 
     /**
@@ -38,6 +39,7 @@ public class Task {
             throw new PennyException("Task is already marked as done");
         }
         isDone = false;
+        assert !isDone : "Task should be marked undone after unmarkAsDone()";
     }
 
     /**
