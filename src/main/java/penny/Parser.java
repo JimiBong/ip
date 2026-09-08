@@ -2,6 +2,7 @@ package penny;
 
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 
 /**
@@ -27,143 +28,169 @@ public class Parser {
 
         switch (command) {
             case BYE:
-                return new ParseResult("Bye! See you soon!", true);
-
+                return handleBye();
             case LIST:
-                if (isLoading) {
-                    return new ParseResult("", false);
-                }
-
-                if (tasks.isEmpty()) {
-                    throw new PennyException("There are no tasks on your list");
-                }
-
-                ArrayList<String> listedTasks = new ArrayList<>();
-                for (int i = 0; i < tasks.size(); i++) {
-                    listedTasks.add((i + 1) + ". " + tasks.get(i));
-                }
-                return new ParseResult(String.join("\n", listedTasks), false);
-
+                return handleList(tasks, isLoading);
             case DUE:
-                if (isLoading) {
-                    return new ParseResult("", false);
-                }
-
-                if (arguments.isBlank()) {
-                    throw new PennyException("Due date cannot be empty");
-                }
-
-                LocalDateTime dueDate = DateTime.parse(arguments);
-
-                if (tasks.isEmpty()) {
-                    throw new PennyException("There are no tasks on your list");
-                }
-
-                ArrayList<String> dueTasks = new ArrayList<>();
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task task = tasks.get(i);
-                    if (task.isDueOn(dueDate)) {
-                        dueTasks.add((i + 1) + ". " + task);
-                    }
-                }
-
-                if (dueTasks.isEmpty()) {
-                    throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
-                }
-
-                return new ParseResult(String.join("\n", dueTasks), false);
-
+                return handleDue(tasks, arguments, isLoading);
             case FIND:
-                if (isLoading) {
-                    return new ParseResult("", false);
-                }
-
-                if (arguments.isEmpty()) {
-                    throw new PennyException("Find keyword cannot be empty");
-                }
-
-                if (tasks.isEmpty()) {
-                    throw new PennyException("There are no tasks on your list");
-                }
-
-                ArrayList<String> matchingTasks = new ArrayList<>();
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task task = tasks.get(i);
-                    if (task.hasKeyword(arguments.trim())) {
-                        matchingTasks.add((i + 1) + ". " + task);
-                    }
-                }
-
-                if (matchingTasks.isEmpty()) {
-                    throw new PennyException("No matching tasks on your list");
-                }
-
-                return new ParseResult(String.join("\n", matchingTasks), false);
-
+                return handleFind(tasks, arguments, isLoading);
             case MARK:
-                if (!isInteger(arguments)) {
-                    throw new PennyException("Mark expects a number");
-                }
-
-                int markIndex = Integer.parseInt(arguments) - 1;
-                if (markIndex < 0 || markIndex >= tasks.size()) {
-                    throw new PennyException("Mark out of bounds");
-                }
-
-                Task markedTask = tasks.get(markIndex);
-                markedTask.markAsDone();
-                return new ParseResult(isLoading ? "" : "Marked as done: " + markedTask, false);
-
+                return handleMark(tasks, arguments, isLoading);
             case UNMARK:
-                if (!isInteger(arguments)) {
-                    throw new PennyException("Unmark expects a number");
-                }
-
-                int unmarkIndex = Integer.parseInt(arguments) - 1;
-                if (unmarkIndex < 0 || unmarkIndex >= tasks.size()) {
-                    throw new PennyException("Unmark out of bounds");
-                }
-
-                Task unmarkedTask = tasks.get(unmarkIndex);
-                unmarkedTask.unmarkAsDone();
-                return new ParseResult(isLoading ? "" : "Marked as done: " + unmarkedTask, false);
-
+                return handleUnmark(tasks, arguments, isLoading);
             case DELETE:
-                if (!isInteger(arguments)) {
-                    throw new PennyException("Delete expects a number");
-                }
-
-                int deleteIndex = Integer.parseInt(arguments) - 1;
-                if (deleteIndex < 0 || deleteIndex >= tasks.size()) {
-                    throw new PennyException("Delete out of bounds");
-                }
-
-                Task deletedTask = tasks.remove(deleteIndex);
-                return new ParseResult(isLoading ? "" : "Deleted: " + deletedTask, false);
-
+                return handleDelete(tasks, arguments, isLoading);
             case TODO:
-                Task toDoTask = ToDoTask.create(arguments);
-                tasks.add(toDoTask);
-                return new ParseResult(isLoading ? "" : "Added: " + toDoTask, false);
-
+                return handleTodo(tasks, arguments, isLoading);
             case DEADLINE:
-                Task deadlineTask = DeadlineTask.create(arguments);
-                tasks.add(deadlineTask);
-                return new ParseResult(isLoading ? "" : "Added: " + deadlineTask, false);
-
+                return handleDeadline(tasks, arguments, isLoading);
             case EVENT:
-                Task eventTask = EventTask.create(arguments);
-                tasks.add(eventTask);
-                return new ParseResult(isLoading ? "" : "Added: " + eventTask, false);
-
+                return handleEvent(tasks, arguments, isLoading);
             case UNKNOWN:
                 throw new PennyException("I don't think I understand.");
-
             default:
                 return new ParseResult("", false);
         }
+    }
+
+    private static ParseResult handleBye() {
+        return new ParseResult("Bye! See you soon!", true);
+    }
+
+    private static ParseResult handleList(TaskList tasks, boolean isLoading) throws PennyException {
+        if (isLoading) {
+            return new ParseResult("", false);
+        }
+
+        if (tasks.isEmpty()) {
+            throw new PennyException("There are no tasks on your list");
+        }
+
+        return new ParseResult(formatNumbered(tasks, task -> true), false);
+    }
+
+    private static ParseResult handleDue(TaskList tasks, String arguments, boolean isLoading) throws PennyException {
+        if (isLoading) {
+            return new ParseResult("", false);
+        }
+
+        if (arguments.isBlank()) {
+            throw new PennyException("Due date cannot be empty");
+        }
+
+        LocalDateTime dueDate = DateTime.parse(arguments);
+
+        if (tasks.isEmpty()) {
+            throw new PennyException("There are no tasks on your list");
+        }
+
+        String dueTasks = formatNumbered(tasks, task -> task.isDueOn(dueDate));
+
+        if (dueTasks.isEmpty()) {
+            throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
+        }
+
+        return new ParseResult(dueTasks, false);
+    }
+
+    private static ParseResult handleFind(TaskList tasks, String arguments, boolean isLoading) throws PennyException {
+        if (isLoading) {
+            return new ParseResult("", false);
+        }
+
+        if (arguments.isEmpty()) {
+            throw new PennyException("Find keyword cannot be empty");
+        }
+
+        if (tasks.isEmpty()) {
+            throw new PennyException("There are no tasks on your list");
+        }
+
+        String matchingTasks = formatNumbered(tasks, task -> task.hasKeyword(arguments.trim()));
+
+        if (matchingTasks.isEmpty()) {
+            throw new PennyException("No matching tasks on your list");
+        }
+
+        return new ParseResult(matchingTasks, false);
+    }
+
+    private static ParseResult handleMark(TaskList tasks, String arguments, boolean isLoading) throws PennyException {
+        if (!isInteger(arguments)) {
+            throw new PennyException("Mark expects a number");
+        }
+
+        int markIndex = Integer.parseInt(arguments) - 1;
+        if (markIndex < 0 || markIndex >= tasks.size()) {
+            throw new PennyException("Mark out of bounds");
+        }
+
+        Task markedTask = tasks.get(markIndex);
+        markedTask.markAsDone();
+        return new ParseResult(isLoading ? "" : "Marked as done: " + markedTask, false);
+    }
+
+    private static ParseResult handleUnmark(TaskList tasks, String arguments, boolean isLoading)
+            throws PennyException {
+        if (!isInteger(arguments)) {
+            throw new PennyException("Unmark expects a number");
+        }
+
+        int unmarkIndex = Integer.parseInt(arguments) - 1;
+        if (unmarkIndex < 0 || unmarkIndex >= tasks.size()) {
+            throw new PennyException("Unmark out of bounds");
+        }
+
+        Task unmarkedTask = tasks.get(unmarkIndex);
+        unmarkedTask.unmarkAsDone();
+        return new ParseResult(isLoading ? "" : "Marked as done: " + unmarkedTask, false);
+    }
+
+    private static ParseResult handleDelete(TaskList tasks, String arguments, boolean isLoading)
+            throws PennyException {
+        if (!isInteger(arguments)) {
+            throw new PennyException("Delete expects a number");
+        }
+
+        int deleteIndex = Integer.parseInt(arguments) - 1;
+        if (deleteIndex < 0 || deleteIndex >= tasks.size()) {
+            throw new PennyException("Delete out of bounds");
+        }
+
+        Task deletedTask = tasks.remove(deleteIndex);
+        return new ParseResult(isLoading ? "" : "Deleted: " + deletedTask, false);
+    }
+
+    private static ParseResult handleTodo(TaskList tasks, String arguments, boolean isLoading) throws PennyException {
+        Task toDoTask = ToDoTask.create(arguments);
+        tasks.add(toDoTask);
+        return new ParseResult(isLoading ? "" : "Added: " + toDoTask, false);
+    }
+
+    private static ParseResult handleDeadline(TaskList tasks, String arguments, boolean isLoading)
+            throws PennyException {
+        Task deadlineTask = DeadlineTask.create(arguments);
+        tasks.add(deadlineTask);
+        return new ParseResult(isLoading ? "" : "Added: " + deadlineTask, false);
+    }
+
+    private static ParseResult handleEvent(TaskList tasks, String arguments, boolean isLoading)
+            throws PennyException {
+        Task eventTask = EventTask.create(arguments);
+        tasks.add(eventTask);
+        return new ParseResult(isLoading ? "" : "Added: " + eventTask, false);
+    }
+
+    private static String formatNumbered(TaskList tasks, Predicate<Task> filter) {
+        ArrayList<String> lines = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (filter.test(task)) {
+                lines.add((i + 1) + ". " + task);
+            }
+        }
+        return String.join("\n", lines);
     }
 
     public static boolean isInteger(String str) {

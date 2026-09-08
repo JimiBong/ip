@@ -36,7 +36,7 @@ public class Task {
      */
     public void unmarkAsDone() throws PennyException{
         if (!isDone) {
-            throw new PennyException("Task is already marked as done");
+            throw new PennyException("Task is already marked as undone");
         }
         isDone = false;
         assert !isDone : "Task should be marked undone after unmarkAsDone()";

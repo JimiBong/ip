@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
  * DeadlineTask with a description and a deadline date.
  */
 public class DeadlineTask extends Task{
+    private static final String BY_KEYWORD = "/by";
+
     protected LocalDateTime deadline;
 
     protected DeadlineTask(String description, LocalDateTime deadline) {
@@ -22,11 +24,11 @@ public class DeadlineTask extends Task{
      * @throws PennyException if /by is missing, or description or deadline is empty.
      */
     public static DeadlineTask create(String arguments) throws PennyException {
-        if (!arguments.contains("/by")) {
+        if (!arguments.contains(BY_KEYWORD)) {
             throw new PennyException("Deadlines need '/by'");
         }
 
-        String[] parts = arguments.split("/by", 2);
+        String[] parts = arguments.split(BY_KEYWORD, 2);
         assert parts.length == 2 : "Splitting on '/by' after the contains() check should always yield 2 parts";
         String description = parts[0].trim();
         String deadline = parts[1].trim();
