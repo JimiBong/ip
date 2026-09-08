@@ -4,8 +4,8 @@ package penny;
  * TodoTask with only a description.
  */
 public class ToDoTask extends Task {
-    protected ToDoTask(String arguments) {
-        super(arguments.trim());
+    protected ToDoTask(String description) {
+        super(description.trim());
         this.icon = "T";
     }
 
