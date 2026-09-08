@@ -165,6 +165,7 @@ public class Parser {
 
     private static ParseResult handleTodo(TaskList tasks, String arguments, boolean isLoading) throws PennyException {
         Task toDoTask = ToDoTask.create(arguments);
+        ensureUnique(tasks, toDoTask);
         tasks.add(toDoTask);
         return new ParseResult(isLoading ? "" : "Added: " + toDoTask, false);
     }
@@ -172,6 +173,7 @@ public class Parser {
     private static ParseResult handleDeadline(TaskList tasks, String arguments, boolean isLoading)
             throws PennyException {
         Task deadlineTask = DeadlineTask.create(arguments);
+        ensureUnique(tasks, deadlineTask);
         tasks.add(deadlineTask);
         return new ParseResult(isLoading ? "" : "Added: " + deadlineTask, false);
     }
@@ -179,8 +181,23 @@ public class Parser {
     private static ParseResult handleEvent(TaskList tasks, String arguments, boolean isLoading)
             throws PennyException {
         Task eventTask = EventTask.create(arguments);
+        ensureUnique(tasks, eventTask);
         tasks.add(eventTask);
         return new ParseResult(isLoading ? "" : "Added: " + eventTask, false);
+    }
+
+    /**
+     * Throws if a task with the same description as newTask is already on tasks, regardless of
+     * newTask's type or any dates it carries.
+     *
+     * @param tasks tasklist to check against.
+     * @param newTask task about to be added.
+     * @throws PennyException if a task with the same description already exists.
+     */
+    private static void ensureUnique(TaskList tasks, Task newTask) throws PennyException {
+        if (tasks.hasDescription(newTask.getDescription())) {
+            throw new PennyException("This task is already on your list.");
+        }
     }
 
     private static String formatNumbered(TaskList tasks, Predicate<Task> filter) {

@@ -52,6 +52,15 @@ public class Task {
     }
 
     /**
+     * Returns the task's description.
+     *
+     * @return the task's description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Returns boolean if the task is due on dateTime.
      *
      * @param dateTime the date to check if the task is due on.
