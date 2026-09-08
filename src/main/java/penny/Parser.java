@@ -1,7 +1,8 @@
 package penny;
 
-import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -35,11 +36,10 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> listedTasks = new ArrayList<>();
-                for (int i = 0; i < tasks.size(); i++) {
-                    listedTasks.add((i + 1) + ". " + tasks.get(i));
-                }
-                return new ParseResult(String.join("\n", listedTasks), false);
+                String listedTasks = IntStream.range(0, tasks.size())
+                        .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                        .collect(Collectors.joining("\n"));
+                return new ParseResult(listedTasks, false);
 
             case DUE:
                 if (isLoading) {
@@ -56,20 +56,16 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> dueTasks = new ArrayList<>();
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task task = tasks.get(i);
-                    if (task.isDueOn(dueDate)) {
-                        dueTasks.add((i + 1) + ". " + task);
-                    }
-                }
+                String dueTasks = IntStream.range(0, tasks.size())
+                        .filter(i -> tasks.get(i).isDueOn(dueDate))
+                        .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                        .collect(Collectors.joining("\n"));
 
                 if (dueTasks.isEmpty()) {
                     throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
                 }
 
-                return new ParseResult(String.join("\n", dueTasks), false);
+                return new ParseResult(dueTasks, false);
 
             case FIND:
                 if (isLoading) {
@@ -84,20 +80,16 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> matchingTasks = new ArrayList<>();
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task task = tasks.get(i);
-                    if (task.hasKeyword(arguments.trim())) {
-                        matchingTasks.add((i + 1) + ". " + task);
-                    }
-                }
+                String matchingTasks = IntStream.range(0, tasks.size())
+                        .filter(i -> tasks.get(i).hasKeyword(arguments.trim()))
+                        .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                        .collect(Collectors.joining("\n"));
 
                 if (matchingTasks.isEmpty()) {
                     throw new PennyException("No matching tasks on your list");
                 }
 
-                return new ParseResult(String.join("\n", matchingTasks), false);
+                return new ParseResult(matchingTasks, false);
 
             case MARK:
                 if (!isInteger(arguments)) {
