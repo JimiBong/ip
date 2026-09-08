@@ -2,6 +2,7 @@ package penny;
 
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 
 /**
@@ -35,11 +36,7 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> listedTasks = new ArrayList<>();
-                for (int i = 0; i < tasks.size(); i++) {
-                    listedTasks.add((i + 1) + ". " + tasks.get(i));
-                }
-                return new ParseResult(String.join("\n", listedTasks), false);
+                return new ParseResult(formatNumbered(tasks, task -> true), false);
 
             case DUE:
                 if (isLoading) {
@@ -56,20 +53,13 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> dueTasks = new ArrayList<>();
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task task = tasks.get(i);
-                    if (task.isDueOn(dueDate)) {
-                        dueTasks.add((i + 1) + ". " + task);
-                    }
-                }
+                String dueTasks = formatNumbered(tasks, task -> task.isDueOn(dueDate));
 
                 if (dueTasks.isEmpty()) {
                     throw new PennyException("There are no tasks due on " + DateTime.format(dueDate));
                 }
 
-                return new ParseResult(String.join("\n", dueTasks), false);
+                return new ParseResult(dueTasks, false);
 
             case FIND:
                 if (isLoading) {
@@ -84,20 +74,13 @@ public class Parser {
                     throw new PennyException("There are no tasks on your list");
                 }
 
-                ArrayList<String> matchingTasks = new ArrayList<>();
-
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task task = tasks.get(i);
-                    if (task.hasKeyword(arguments.trim())) {
-                        matchingTasks.add((i + 1) + ". " + task);
-                    }
-                }
+                String matchingTasks = formatNumbered(tasks, task -> task.hasKeyword(arguments.trim()));
 
                 if (matchingTasks.isEmpty()) {
                     throw new PennyException("No matching tasks on your list");
                 }
 
-                return new ParseResult(String.join("\n", matchingTasks), false);
+                return new ParseResult(matchingTasks, false);
 
             case MARK:
                 if (!isInteger(arguments)) {
@@ -161,6 +144,17 @@ public class Parser {
             default:
                 return new ParseResult("", false);
         }
+    }
+
+    private static String formatNumbered(TaskList tasks, Predicate<Task> filter) {
+        ArrayList<String> lines = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (filter.test(task)) {
+                lines.add((i + 1) + ". " + task);
+            }
+        }
+        return String.join("\n", lines);
     }
 
     public static boolean isInteger(String str) {
