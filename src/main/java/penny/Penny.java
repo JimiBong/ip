@@ -39,6 +39,7 @@ public class Penny {
     ParseResult respond(String input) {
         try {
             ParseResult result = Parser.handleInput(taskList, input, false);
+            assert result != null : "Parser.handleInput should always return a ParseResult";
             if (!result.shouldExit()) {
                 commands.add(input);
                 FileManager.writeData(FILE_NAME, String.join("\n", commands));

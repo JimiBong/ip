@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
  * EventTask with a description, a from date and a to date.
  */
 public class EventTask extends Task{
+    private static final String FROM_KEYWORD = "/from";
+    private static final String TO_KEYWORD = "/to";
+
     protected LocalDateTime from;
     protected LocalDateTime to;
 
@@ -24,17 +27,19 @@ public class EventTask extends Task{
      * @throws PennyException if /from or /to is missing, or description or from or to is empty.
      */
     public static EventTask create(String arguments) throws PennyException {
-        int fromIndex = arguments.indexOf("/from");
-        int toIndex = arguments.indexOf("/to");
+        int fromIndex = arguments.indexOf(FROM_KEYWORD);
+        int toIndex = arguments.indexOf(TO_KEYWORD);
 
         if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
             throw new PennyException("Events need '/from' followed by '/to'");
         }
+        assert toIndex > fromIndex : "'/to' should occur after '/from' at this point";
 
         String description = arguments.substring(0, fromIndex).trim();
 
-        String remainder = arguments.substring(fromIndex + 5);
-        String[] parts = remainder.split("/to", 2);
+        String remainder = arguments.substring(fromIndex + FROM_KEYWORD.length());
+        String[] parts = remainder.split(TO_KEYWORD, 2);
+        assert parts.length == 2 : "Splitting on '/to' after the indexOf() check should always yield 2 parts";
 
         String from = parts[0].trim();
         String to = parts[1].trim();
