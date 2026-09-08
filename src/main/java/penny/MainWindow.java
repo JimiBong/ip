@@ -25,8 +25,8 @@ public class MainWindow extends AnchorPane {
 
     private Penny penny;
 
-    private final Image IMAGE_USER = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private final Image IMAGE_PENNY = new Image(this.getClass().getResourceAsStream("/images/DaPenny.png"));
+    private final Image imageUser = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
+    private final Image imagePenny = new Image(this.getClass().getResourceAsStream("/images/DaPenny.png"));
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
@@ -49,8 +49,8 @@ public class MainWindow extends AnchorPane {
         String input = userInput.getText();
         ParseResult result = penny.respond(input);
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, IMAGE_USER),
-                DialogBox.getPennyDialog(result.message(), IMAGE_PENNY)
+                DialogBox.getUserDialog(input, imageUser),
+                DialogBox.getPennyDialog(result.message(), imagePenny)
         );
         userInput.clear();
 

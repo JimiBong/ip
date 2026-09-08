@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 /**
  * DeadlineTask with a description and a deadline date.
  */
-public class DeadlineTask extends Task{
+public class DeadlineTask extends Task {
     private static final String BY_KEYWORD = "/by";
 
     protected LocalDateTime deadline;
@@ -46,7 +46,7 @@ public class DeadlineTask extends Task{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString()
                 + " (by: " + DateTime.format(this.deadline) + ")";
     }

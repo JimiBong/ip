@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 /**
  * EventTask with a description, a from date and a to date.
  */
-public class EventTask extends Task{
+public class EventTask extends Task {
     private static final String FROM_KEYWORD = "/from";
     private static final String TO_KEYWORD = "/to";
 
@@ -57,7 +57,7 @@ public class EventTask extends Task{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString()
                 + " (from: " + DateTime.format(this.from)
                 + " | to: " + DateTime.format(this.to) + ")";

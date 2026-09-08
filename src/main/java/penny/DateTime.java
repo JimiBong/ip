@@ -20,7 +20,7 @@ public class DateTime {
      *
      * @param dateTime date time to be formatted as a string.
      */
-    public static String format(LocalDateTime dateTime){
+    public static String format(LocalDateTime dateTime) {
         if (dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dateTime.format(FORMAT_DATE);
         }

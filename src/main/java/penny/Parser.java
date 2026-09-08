@@ -190,6 +190,12 @@ public class Parser {
                 .collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Returns whether str can be parsed as an integer.
+     *
+     * @param str string to check.
+     * @return true if str is a valid integer, false otherwise.
+     */
     public static boolean isInteger(String str) {
         if (str == null || str.isBlank()) {
             return false;

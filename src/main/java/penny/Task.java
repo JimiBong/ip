@@ -21,7 +21,7 @@ public class Task {
      *
      * @throws PennyException if the task is already marked as done.
      */
-    public void markAsDone() throws PennyException{
+    public void markAsDone() throws PennyException {
         if (isDone) {
             throw new PennyException("Task is already marked as done");
         }
@@ -34,7 +34,7 @@ public class Task {
      *
      * @throws PennyException if the task is already marked as undone.
      */
-    public void unmarkAsDone() throws PennyException{
+    public void unmarkAsDone() throws PennyException {
         if (!isDone) {
             throw new PennyException("Task is already marked as undone");
         }
