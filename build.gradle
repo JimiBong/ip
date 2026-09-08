@@ -59,11 +59,16 @@ application {
     mainClass = 'penny.Launcher'
 }
 
+run {
+    enableAssertions = true
+}
+
 tasks.register('runGui', JavaExec) {
     group = 'application'
     description = 'Runs the JavaFX GUI version of Penny.'
     mainClass = 'penny.Launcher'
     classpath = sourceSets.main.runtimeClasspath
+    enableAssertions = true
 }
 
 tasks.register('runCli', JavaExec) {
@@ -72,6 +77,7 @@ tasks.register('runCli', JavaExec) {
     mainClass = 'penny.Penny'
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
+    enableAssertions = true
 }
 
 jar {
