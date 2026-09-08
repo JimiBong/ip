@@ -29,6 +29,7 @@ public class DeadlineTask extends Task{
         }
 
         String[] parts = arguments.split(BY_KEYWORD, 2);
+        assert parts.length == 2 : "Splitting on '/by' after the contains() check should always yield 2 parts";
         String description = parts[0].trim();
         String deadline = parts[1].trim();
 
