@@ -105,4 +105,28 @@ public class ParserTest {
 
         assertEquals("Delete out of bounds", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("Throws PennyException when adding a task with a description already on the list")
+    void handleInput_duplicateDescription_throwsPennyException() throws PennyException {
+        Parser.handleInput(tasklist, "todo read book", false);
+
+        PennyException exception = assertThrows(PennyException.class, () -> {
+            Parser.handleInput(tasklist, "todo read book", false);
+        });
+
+        assertEquals("This task is already on your list.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Throws PennyException for a duplicate description of a different task type and date")
+    void handleInput_duplicateDescriptionDifferentDate_throwsPennyException() throws PennyException {
+        Parser.handleInput(tasklist, "deadline submit report /by 20122026 1800", false);
+
+        PennyException exception = assertThrows(PennyException.class, () -> {
+            Parser.handleInput(tasklist, "event submit report /from 25122026 0900 /to 25122026 1000", false);
+        });
+
+        assertEquals("This task is already on your list.", exception.getMessage());
+    }
 }

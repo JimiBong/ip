@@ -82,4 +82,20 @@ public class TaskListTest {
     void remove_invalidIndex_throwsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> tasklist.remove(0));
     }
+
+    @Test
+    @DisplayName("hasDescription returns true when a task with the description exists")
+    void hasDescription_matchingDescription_returnsTrue() {
+        tasklist.add(dummyTask1);
+
+        assertTrue(tasklist.hasDescription("Read book"));
+    }
+
+    @Test
+    @DisplayName("hasDescription returns false when no task matches the description")
+    void hasDescription_noMatchingDescription_returnsFalse() {
+        tasklist.add(dummyTask1);
+
+        assertFalse(tasklist.hasDescription("Return book"));
+    }
 }

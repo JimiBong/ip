@@ -46,6 +46,16 @@ public class TaskList {
     }
 
     /**
+     * Returns boolean if a task with the given description is already on the list.
+     *
+     * @param description description to check for.
+     * @return boolean if a task with the given description is already on the list.
+     */
+    public boolean hasDescription(String description) {
+        return tasks.stream().anyMatch(task -> task.getDescription().equals(description));
+    }
+
+    /**
      * Returns a task at index after removing it from the list.
      *
      * @param index index of the task to remove.
