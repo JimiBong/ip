@@ -12,6 +12,8 @@ import java.time.format.DateTimeParseException;
 public class DateTime {
     private static final DateTimeFormatter FORMAT_DATE_TIME = DateTimeFormatter.ofPattern("dd MM yyyy HHmm");
     private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd MM yyyy");
+    private static final DateTimeFormatter PARSE_DATE_TIME = DateTimeFormatter.ofPattern("ddMMyyyy HHmm");
+    private static final DateTimeFormatter PARSE_DATE = DateTimeFormatter.ofPattern("ddMMyyyy");
 
     /**
      * Returns dateTime formatted as a string.
@@ -32,14 +34,11 @@ public class DateTime {
      * @throws PennyException if the string format is not supported.
      */
     public static LocalDateTime parse(String input) throws PennyException {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy HHmm");
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");
-
         try {
-            return LocalDateTime.parse(input.trim(), dateTimeFormatter);
+            return LocalDateTime.parse(input.trim(), PARSE_DATE_TIME);
         } catch (DateTimeParseException e1) {
             try {
-                LocalDate date = LocalDate.parse(input.trim(), dateFormatter);
+                LocalDate date = LocalDate.parse(input.trim(), PARSE_DATE);
                 return date.atStartOfDay(); // Midnight as the default time
             } catch (DateTimeParseException e2) {
                 throw new PennyException("Use 'ddMMyyyy HHmm' or 'ddMMyyyy'.");
